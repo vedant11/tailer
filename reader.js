@@ -27,14 +27,9 @@ const linesSpeaker = (fileLocation, starting) => {
 
 const attachFileReader = (LOG_FILE, io) => {
 	let resolver;
-	const createFile = new Promise((resolve, reject) => {
+	new Promise((resolve, _) => {
 		resolver = resolve;
-	});
-	fs.open(LOG_FILE, 'a+', (err, content) => {
-		// a+ append flag avoid old data deletion
-		resolver();
-	});
-	Promise.all([createFile]).then(() => {
+	}).then(() => {
 		console.log('file-check resolved');
 
 		fs.watchFile(LOG_FILE, (curr, prev) => {
@@ -51,6 +46,11 @@ const attachFileReader = (LOG_FILE, io) => {
 				});
 			return 0;
 		});
+	});
+	fs.open(LOG_FILE, 'a+', (err, content) => {
+		// a+ append flag avoids old data deletion
+		// file has been created; resolving the check
+		resolver();
 	});
 };
 
