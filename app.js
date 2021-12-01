@@ -2,7 +2,14 @@
 const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const { path } = require('path');
+const path = require('path');
+const fs = require('fs');
+
+// local module
+const { linesSpeaker, attachFileReader } = require('./reader');
+
+// constants
+const LOG_FILE = './access.log';
 
 // new instances
 const app = express();
@@ -17,6 +24,7 @@ io.on('connection', (socket) => {
 io.engine.on('connection_error', (err) => {
 	console.log('err with user ', err.context, err.messsage);
 });
+attachFileReader(LOG_FILE, io);
 
 // express server
 app.get('/', (req, res) => {
